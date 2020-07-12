@@ -1,17 +1,25 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
+const express = require("express");
+const bodyParser = require("body-parser");
+const cors = require("cors");
 const app = express();
-const port = 4000;
+const server = require("http").createServer(app);
+const options = {};
+const port = process.env.PORT || 4000;
+
+const io = require("socket.io")(server, options);
 
 app.use(cors());
 app.use(bodyParser.json());
 app.use(
-    bodyParser.urlencoded({
-        extended: true,
-    })
+  bodyParser.urlencoded({
+    extended: true,
+  })
 );
 
-app.listen(port, () => {
-    console.log(`App running on port ${port}.`)
+io.on("connection", (socket) => {
+  console.log(`${socket.id} is joined`);
+});
+
+server.listen(port, () => {
+  console.log(`App running on port ${port}.`);
 });
