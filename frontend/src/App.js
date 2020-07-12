@@ -1,20 +1,20 @@
-import React, { useEffect } from "react";
+import React, { useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Route,
   Switch,
   Redirect,
-} from "react-router-dom";
-import io from "socket.io-client";
+} from 'react-router-dom';
+import io from 'socket.io-client';
 
-import { ROUTES } from "constants/routes";
-import HomePage from "pages/home";
+import { ROUTES } from 'constants/routes';
+import HomePage from 'pages/home';
 
 function App() {
   useEffect(() => {
-    const socket = io.connect("http://localhost:4000");
+    const socket = io.connect('http://localhost:4000');
 
-    socket.on("connect", () => {
+    socket.on('connect', () => {
       console.log(socket.connected);
     });
   }, []);
