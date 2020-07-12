@@ -1,5 +1,14 @@
 import React, { useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect,
+} from "react-router-dom";
 import io from "socket.io-client";
+
+import { ROUTES } from "constants/routes";
+import HomePage from "pages/home";
 
 function App() {
   useEffect(() => {
@@ -12,7 +21,16 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header"></header>
+      <Router>
+        <Switch>
+          <Route exact path={ROUTES.HOME}>
+            <HomePage />
+          </Route>
+          <Route path="*">
+            <Redirect to={ROUTES.HOME} />
+          </Route>
+        </Switch>
+      </Router>
     </div>
   );
 }
