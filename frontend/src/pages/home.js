@@ -33,6 +33,8 @@ const HomePage = () => {
       createRoom(name);
       resetForm();
     }
+
+    console.log(socket);
   };
 
   return (

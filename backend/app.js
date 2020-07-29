@@ -21,10 +21,27 @@ io.on('connection', (socket) => {
   console.log(`${socket.id} is joined`);
 
   socket.on('create room', ({ name, password }) => {
-    console.log(name, password);
     const roomId = uuid.v4();
-    console.log(roomId);
-    socket.join(roomId);
+    console.log(`${socket.id} joined the room ${roomId}`);
+    socket.join(roomId, (id) => {
+      socket.emit('open room', roomId);
+    });
+  });
+
+  socket.on('join room', (roomId) => {
+    socket.join(roomId, (id) => {
+      socket.to(roomId).emit('greeting', socket.id);
+    });
+  })
+
+  socket.on('leave room', (roomId) => {
+    socket.join(roomId, (id) => {
+      socket.to(roomId).emit('new message', {message: `${socket.id} is joined`});
+    });
+  })
+
+  socket.on('disconnect', () => {
+    console.log(`${socket.id} is disconnected`);
   });
 });
 
