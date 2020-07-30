@@ -32,13 +32,17 @@ io.on('connection', (socket) => {
     socket.join(roomId, (id) => {
       socket.to(roomId).emit('greeting', socket.id);
     });
-  })
+  });
+
+  socket.on('send message', ({ message, author }) => {
+    console.log(socket.rooms);
+  });
 
   socket.on('leave room', (roomId) => {
-    socket.join(roomId, (id) => {
-      socket.to(roomId).emit('new message', {message: `${socket.id} is joined`});
-    });
-  })
+    socket.leave(roomId, () => {
+      io.to(roomId).emit('new message', { message: `${socket.id} is joined` })
+    })
+  });
 
   socket.on('disconnect', () => {
     console.log(`${socket.id} is disconnected`);
