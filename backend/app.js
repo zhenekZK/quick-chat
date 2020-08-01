@@ -22,26 +22,32 @@ io.on('connection', (socket) => {
 
   socket.on('create room', ({ name, password }) => {
     const roomId = uuid.v4();
-    console.log(`${socket.id} joined the room ${roomId}`);
     socket.join(roomId, (id) => {
-      socket.emit('open room', roomId);
+      socket.emit('join room', roomId);
     });
   });
 
   socket.on('join room', (roomId) => {
-    socket.join(roomId, (id) => {
-      socket.to(roomId).emit('greeting', socket.id);
+    socket.join(roomId, () => {
+      io.to(roomId).emit('new message', {
+        text: `${socket.id} joined the room`,
+      });
     });
   });
 
-  socket.on('send message', ({ message, author }) => {
-    console.log(socket.rooms);
+  socket.on('new message', ({ text, author, room }) => {
+    console.log(text, ' ', author, ' ', room);
+    if (room) {
+      io.to(room).emit('new message', { text, author });
+    }
   });
 
   socket.on('leave room', (roomId) => {
     socket.leave(roomId, () => {
-      io.to(roomId).emit('new message', { message: `${socket.id} is joined` })
-    })
+      io.to(roomId).emit('new message', {
+        text: `${socket.id} left the room`,
+      });
+    });
   });
 
   socket.on('disconnect', () => {

@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Box } from '@material-ui/core';
 import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
 
 import { ROUTES } from 'constants/routes';
@@ -14,14 +15,13 @@ function App() {
     socket.on('connect', () => {
       console.log(socket.connected);
     });
-    socket.on('open room', (roomId) => {
-      console.log(roomId);
+    socket.on('join room', (roomId) => {
       history.push(roomId);
     });
   }, [socket, history]);
 
   return (
-    <div className="App">
+    <Box width="100%" height="100%" minHeight="100vh">
       <Switch>
         <Route exact path={ROUTES.HOME}>
           <HomePage />
@@ -33,7 +33,7 @@ function App() {
           <Redirect to={ROUTES.HOME} />
         </Route>
       </Switch>
-    </div>
+    </Box>
   );
 }
 

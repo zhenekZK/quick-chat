@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { TextField, Button } from '@material-ui/core';
 
+import { EVENTS } from 'constants/socket-events';
 import { useSocket } from 'context/socket-context';
 
 const HomePage = () => {
@@ -10,7 +11,7 @@ const HomePage = () => {
 
   const createRoom = () => {
     console.log(name, password);
-    socket.emit('create room', { name, password });
+    socket.emit(EVENTS.CREATE_ROOM, { name, password });
   };
 
   const changeName = (event) => {
