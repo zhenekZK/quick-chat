@@ -18,13 +18,13 @@ const RoomPage = () => {
     [messages],
   );
 
-  useEffect(() => {
-    socket.emit(EVENTS.JOIN_ROOM, location.pathname.substr(1)); // temporary solution
+  // useEffect(() => {
+  //   socket.emit(EVENTS.JOIN_ROOM, location.pathname.substr(1)); // temporary solution
 
-    return () => {
-      socket.emit(EVENTS.LEAVE_ROOM);
-    };
-  }, [socket, location.pathname]);
+  //   return () => {
+  //     socket.emit(EVENTS.LEAVE_ROOM);
+  //   };
+  // }, [socket, location.pathname]);
 
   useEffect(() => {
     socket.on(EVENTS.NEW_MESSAGE, addMessage);

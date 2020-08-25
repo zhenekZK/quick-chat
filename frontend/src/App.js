@@ -3,8 +3,8 @@ import { Box } from '@material-ui/core';
 import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
 
 import { ROUTES } from 'constants/routes';
+import { EVENTS } from 'constants/socket-events';
 import HomePage from 'pages/home';
-import RoomPage from 'pages/room';
 import { useSocket } from 'context/socket-context';
 
 function App() {
@@ -15,7 +15,8 @@ function App() {
     socket.on('connect', () => {
       console.log(socket.connected);
     });
-    socket.on('join room', (roomId) => {
+    socket.on(EVENTS.JOIN_ROOM, (roomId) => {
+      console.log('room id ', roomId);
       history.push(roomId);
     });
   }, [socket, history]);
@@ -25,9 +26,6 @@ function App() {
       <Switch>
         <Route exact path={ROUTES.HOME}>
           <HomePage />
-        </Route>
-        <Route exact path={ROUTES.ROOM}>
-          <RoomPage />
         </Route>
         <Route path="*">
           <Redirect to={ROUTES.HOME} />

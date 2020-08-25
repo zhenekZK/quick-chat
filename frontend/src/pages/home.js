@@ -1,63 +1,78 @@
 import React, { useState } from 'react';
 import { TextField, Button } from '@material-ui/core';
+import { useLocation } from 'react-router-dom';
 
 import { EVENTS } from 'constants/socket-events';
 import { useSocket } from 'context/socket-context';
 
 const HomePage = () => {
+  const location = useLocation();
+  const [step, setStep] = useState(0);
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const socket = useSocket();
-
-  const createRoom = () => {
+  
+  const joinRoom = () => {
     console.log(name, password);
-    socket.emit(EVENTS.CREATE_ROOM, { name, password });
+    socket.emit(EVENTS.JOIN_ROOM, { name, password });
   };
 
-  const changeName = (event) => {
+  const handleChangeName = (event) => {
     setName(event.target.value);
   };
 
-  const changePassword = (event) => {
+  const handleChangePassword = (event) => {
     setPassword(event.target.value);
   };
 
-  const resetForm = () => {
-    setName('');
-    setPassword('');
-  };
-
-  const handleSubmit = (event) => {
+  const handleNameSubmit = (event) => {
     event.preventDefault();
 
     if (name) {
-      createRoom(name);
-      resetForm();
+      setStep(step + 1);
     }
+  };
 
-    console.log(socket);
+  const handlePasswordSubmit = (event) => {
+    event.preventDefault();
+
+    if (password) {
+      joinRoom();
+    }
   };
 
   return (
-    <div style={{ margin: '50px auto', width: '400px' }}>
-      <form onSubmit={handleSubmit}>
-        <TextField
-          placeholder="Username"
-          value={name}
-          onChange={changeName}
-          fullWidth
-        />
-        <TextField
-          placeholder="Password"
-          value={password}
-          onChange={changePassword}
-          fullWidth
-        />
-        <Button variant="outlined" type="submit">
-          Let's make it
-        </Button>
-      </form>
-    </div>
+    <>
+      {step === 0 ? (
+        <div style={{ margin: '50px auto', width: '400px' }}>
+          <form onSubmit={handleNameSubmit}>
+            <TextField
+              placeholder="Username"
+              value={name}
+              onChange={handleChangeName}
+              fullWidth
+            />
+            <Button variant="outlined" type="submit">
+              Let's make it, {name}!
+            </Button>
+          </form>
+        </div>
+      ) : (
+        <div style={{ margin: '50px auto', width: '400px' }}>
+          <form onSubmit={handlePasswordSubmit}>
+            <TextField
+              placeholder="Room password"
+              value={password}
+              onChange={handleChangePassword}
+              fullWidth
+            />
+            <Button variant="outlined" type="submit">
+              Set password
+            </Button>
+          </form>
+        </div>
+      )}
+    </>
   );
 };
 
