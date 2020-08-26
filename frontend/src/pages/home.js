@@ -4,14 +4,16 @@ import { useLocation } from 'react-router-dom';
 
 import { EVENTS } from 'constants/socket-events';
 import { useSocket } from 'context/socket-context';
+import { useUserData } from 'context/user-data-context';
 
 const HomePage = () => {
   const location = useLocation();
+  const { setUserData } = useUserData();
   const [step, setStep] = useState(0);
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const socket = useSocket();
-  
+
   const joinRoom = () => {
     console.log(name, password);
     socket.emit(EVENTS.JOIN_ROOM, { name, password });

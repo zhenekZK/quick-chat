@@ -5,6 +5,7 @@ import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
 import { ROUTES } from 'constants/routes';
 import { EVENTS } from 'constants/socket-events';
 import HomePage from 'pages/home';
+import RoomPage from 'pages/room';
 import { useSocket } from 'context/socket-context';
 
 function App() {
@@ -26,6 +27,9 @@ function App() {
       <Switch>
         <Route exact path={ROUTES.HOME}>
           <HomePage />
+        </Route>
+        <Route exact path={ROUTES.ROOM}>
+          <RoomPage />
         </Route>
         <Route path="*">
           <Redirect to={ROUTES.HOME} />

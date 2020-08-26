@@ -33,7 +33,7 @@ function useSocketContext() {
   return context;
 }
 
-function useSocket(info) {
+function useSocket() {
   const socket = useSocketContext();
 
   return socket;
