@@ -1,15 +1,25 @@
 import React, { useEffect, useCallback, useState } from 'react';
 import { Typography, Box, TextField, Button } from '@material-ui/core';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 
+import { ROUTES } from 'constants/routes';
 import { EVENTS } from 'constants/socket-events';
 import { useSocket } from 'context/socket-context';
+import useUserData from 'hooks/use-user-data';
 
 const RoomPage = () => {
   const socket = useSocket();
   const location = useLocation();
+  const history = useHistory();
+  const { username } = useUserData();
   const [inputValue, setInputValue] = useState('');
   const [messages, setMessages] = useState([]);
+
+  useEffect(() => {
+    if (!username) {
+      history.push(ROUTES.HOME);
+    }
+  }, [history, username]);
 
   const addMessage = useCallback(
     (message) => {
@@ -17,14 +27,6 @@ const RoomPage = () => {
     },
     [messages],
   );
-
-  // useEffect(() => {
-  //   socket.emit(EVENTS.JOIN_ROOM, location.pathname.substr(1)); // temporary solution
-
-  //   return () => {
-  //     socket.emit(EVENTS.LEAVE_ROOM);
-  //   };
-  // }, [socket, location.pathname]);
 
   useEffect(() => {
     socket.on(EVENTS.NEW_MESSAGE, addMessage);

@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { TextField, Button } from '@material-ui/core';
-import { useLocation } from 'react-router-dom';
 
 import { EVENTS } from 'constants/socket-events';
 import { useSocket } from 'context/socket-context';
-import { useUserData } from 'context/user-data-context';
+import useUserData from 'hooks/use-user-data';
 
 const HomePage = () => {
-  const location = useLocation();
   const { setUserData } = useUserData();
   const [step, setStep] = useState(0);
   const [name, setName] = useState('');
@@ -31,6 +29,7 @@ const HomePage = () => {
     event.preventDefault();
 
     if (name) {
+      setUserData({ username: name });
       setStep(step + 1);
     }
   };

@@ -3,10 +3,13 @@ import PropTypes from 'prop-types';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 import { SocketProvider } from './socket-context';
+import { UserDataProvider } from './user-data-context';
 
 const AppProviders = ({ children }) => (
   <SocketProvider>
-    <Router>{children}</Router>
+    <UserDataProvider>
+      <Router>{children}</Router>
+    </UserDataProvider>
   </SocketProvider>
 );
 

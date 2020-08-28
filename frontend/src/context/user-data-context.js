@@ -1,12 +1,17 @@
-import React, { useState, useMemo, useContext, useEffect } from 'react';
+import React, { useMemo, useReducer } from 'react';
 import PropTypes from 'prop-types';
 
 const UserDataContext = React.createContext();
 
 function UserDataProvider({ children }) {
-  const [userData, setUserData] = useState();
+  const [userData, setUserData] = useReducer((s, a) => ({ ...s, ...a }), {
+    username: '',
+    token: '',
+  });
 
-  const providerValue = useMemo(() => ({ userData, setUserData }), [data]);
+  const providerValue = useMemo(() => ({ ...userData, setUserData }), [
+    userData,
+  ]);
 
   return (
     <UserDataContext.Provider value={providerValue}>
@@ -19,20 +24,4 @@ UserDataProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-function useUserDataContext() {
-  const context = useContext(UserDataContext);
-
-  if (context === undefined) {
-    throw new Error(`useUserData must be used within a UserDataProvider`);
-  }
-
-  return context;
-}
-
-function useUserData() {
-  const data = useUserDataContext();
-
-  return data;
-}
-
-export { UserDataProvider, useUserData };
+export { UserDataProvider, UserDataContext };
