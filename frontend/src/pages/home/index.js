@@ -6,6 +6,8 @@ import { EVENTS } from 'constants/socket-events';
 import { useSocket } from 'context/socket-context';
 import useUserData from 'hooks/use-user-data';
 
+import {ErrorPanel} from './error-panel';
+
 const HomePage = () => {
   const { setUserData } = useUserData();
   const [step, setStep] = useState(0);
@@ -95,6 +97,7 @@ const HomePage = () => {
 
   return (
     <>
+      <ErrorPanel />
       {(() => {
         switch (step) {
           case 0:
