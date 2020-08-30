@@ -3,9 +3,7 @@ import { Box } from '@material-ui/core';
 import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
 
 import { ROUTES } from 'constants/routes';
-import { EVENTS } from 'constants/socket-events';
 import HomePage from 'pages/home';
-import RoomPage from 'pages/room';
 import { useSocket } from 'context/socket-context';
 
 function App() {
@@ -16,23 +14,25 @@ function App() {
     socket.on('connect', () => {
       console.log(socket.connected);
     });
-    socket.on(EVENTS.JOIN_ROOM, (roomId) => {
-      console.log('room id ', roomId);
-      history.push(roomId);
+    socket.on('chat error', (error) => {
+      console.log(error.text);
     });
   }, [socket, history]);
 
   return (
     <Box width="100%" height="100%" minHeight="100vh">
       <Switch>
-        <Route exact path={ROUTES.HOME}>
+        <Route path={ROUTES.NEW_ROOM}>
           <HomePage />
         </Route>
-        <Route exact path={ROUTES.ROOM}>
-          <RoomPage />
+        <Route path={ROUTES.EXISTING_ROOM}>
+          <HomePage />
         </Route>
+        {/* <Route exact path={ROUTES.ROOM}>
+          <RoomPage />
+        </Route> */}
         <Route path="*">
-          <Redirect to={ROUTES.HOME} />
+          <Redirect to={ROUTES.NEW_ROOM} />
         </Route>
       </Switch>
     </Box>

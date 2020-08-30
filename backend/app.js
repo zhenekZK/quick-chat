@@ -19,33 +19,53 @@ app.use(
 );
 
 // temporary rooms object
-const rooms = [];
+const rooms = {};
 
 io.on('connection', (socket) => {
   console.log(`${socket.id} is joined`);
-  console.log(socket.rooms)
+  console.log(socket.rooms);
 
-  socket.on('join room', ({ name, password, roomId }) => {
+  socket.on('join room', ({ name, password, roomId = null }) => {
     socket.username = name;
 
     console.log(socket.username);
+
     // check if roomId is exist
     // if exist -> join room
     // if roomId is incorrect -> send error
     // if roomId === undefined -> create new room
 
-    // create new room
-    if (roomId === undefined) {
+    if (roomId) {
+      // check if roomId is existing
+      if (rooms[roomId]) {
+        if (rooms[roomId].password === password) {
+          socket.join(roomId, () => {
+            socket.emit('join room', roomId);
+
+            io.to(roomId).emit('new message', {
+              text: `${socket.username} joined the room`,
+            });
+          });
+        } else {
+          socket.emit('chat error', {
+            text: 'The password for this room is incorrect',
+          });
+        }
+      } else {
+        socket.emit('chat error', {
+          text: 'There is not such rooms you are trying to join',
+        });
+      }
+    } else {
       const id = uuid.v4();
 
-      rooms.push({
+      rooms[id] = {
         id,
         users: [socket.username],
         password,
-      });
+      };
 
       socket.join(id, () => {
-        console.log(`${socket.username} is joined ${id} room`);
         socket.emit('join room', id);
 
         io.to(id).emit('new message', {
@@ -56,10 +76,8 @@ io.on('connection', (socket) => {
   });
 
   socket.on('new message', ({ text, author, room }) => {
-    console.log(text, ' ', author, ' ', room);
-    console.log(socket.rooms);
     if (room) {
-      io.to(room).emit('new message', { text, author });
+      io.to(room).emit('new message', { text, author: socket.username });
     }
   });
 
