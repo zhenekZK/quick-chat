@@ -6,8 +6,6 @@ import { EVENTS } from 'constants/socket-events';
 import { useSocket } from 'context/socket-context';
 import useUserData from 'hooks/use-user-data';
 
-import {ErrorPanel} from './error-panel';
-
 const HomePage = () => {
   const { setUserData } = useUserData();
   const [step, setStep] = useState(0);
@@ -21,7 +19,6 @@ const HomePage = () => {
 
   useEffect(() => {
     socket.on(EVENTS.JOIN_ROOM, (roomId) => {
-      console.log('room id ', roomId);
       history.push(roomId);
       setStep(step + 1);
     });
@@ -50,6 +47,7 @@ const HomePage = () => {
     if (name) {
       setUserData({ username: name });
       setStep(step + 1);
+      setName('');
     }
   };
 
@@ -58,6 +56,7 @@ const HomePage = () => {
 
     if (password) {
       joinRoom();
+      setPassword('');
     }
   };
 
@@ -97,12 +96,11 @@ const HomePage = () => {
 
   return (
     <>
-      <ErrorPanel />
       {(() => {
         switch (step) {
           case 0:
             return (
-              <div style={{ margin: '50px auto', width: '400px' }}>
+              <div style={{ margin: '0 auto', width: '400px' }}>
                 <form onSubmit={handleNameSubmit}>
                   <TextField
                     placeholder="Username"
@@ -118,7 +116,7 @@ const HomePage = () => {
             );
           case 1:
             return (
-              <div style={{ margin: '50px auto', width: '400px' }}>
+              <div style={{ margin: '0 auto', width: '400px' }}>
                 <form onSubmit={handlePasswordSubmit}>
                   <TextField
                     placeholder="Room password"
