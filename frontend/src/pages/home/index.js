@@ -47,7 +47,6 @@ const HomePage = () => {
     if (name) {
       setUserData({ username: name });
       setStep(step + 1);
-      setName('');
     }
   };
 

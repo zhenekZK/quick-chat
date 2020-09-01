@@ -28,18 +28,12 @@ io.on('connection', (socket) => {
   socket.on('join room', ({ name, password, roomId = null }) => {
     socket.username = name;
 
-    console.log(socket.username);
-
-    // check if roomId is exist
-    // if exist -> join room
-    // if roomId is incorrect -> send error
-    // if roomId === undefined -> create new room
-
     if (roomId) {
       // check if roomId is existing
       if (rooms[roomId]) {
         if (rooms[roomId].password === password) {
           socket.join(roomId, () => {
+            socket.roomId = roomId;
             socket.emit('join room', roomId);
 
             io.to(roomId).emit('new message', {
@@ -67,6 +61,8 @@ io.on('connection', (socket) => {
 
       socket.join(id, () => {
         socket.emit('join room', id);
+        socket.isAdmin = true;
+        socket.roomId = id;
 
         io.to(id).emit('new message', {
           text: `${socket.username} joined the room`,
@@ -75,7 +71,7 @@ io.on('connection', (socket) => {
     }
   });
 
-  socket.on('new message', ({ text, author, room }) => {
+  socket.on('new message', ({ text, room }) => {
     if (room) {
       io.to(room).emit('new message', { text, author: socket.username });
     }
@@ -84,13 +80,34 @@ io.on('connection', (socket) => {
   socket.on('leave room', (roomId) => {
     socket.leave(roomId, () => {
       io.to(roomId).emit('new message', {
-        text: `${socket.id} left the room`,
+        text: `${socket.username} left the room`,
       });
     });
   });
 
-  socket.on('disconnect', () => {
-    console.log(`${socket.id} is disconnected`);
+  socket.on('disconnect', (reason) => {
+    const roomId = socket.roomId;
+
+    if (roomId) {
+      // if socket is admin -> disconnect all users
+      // if socket is a guest -> just notify about leaving
+      if (socket.isAdmin) {
+        io.of('/')
+          .in(roomId)
+          .clients((error, clients) => {
+            if (error) throw error;
+            for (var i = 0; i < clients.length; i++) {
+              io.sockets.connected[clients[i]].disconnect(true);
+            }
+          });
+      } else {
+        io.to(roomId).emit('new message', {
+          text: `${socket.username} left the room`,
+        });
+      }
+    }
+    console.log(socket.rooms);
+    console.log(`${socket.username} is disconnected, reason -> ${reason}`);
   });
 });
 
