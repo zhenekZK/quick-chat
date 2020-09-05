@@ -77,6 +77,18 @@ io.on('connection', (socket) => {
     }
   });
 
+  socket.on('typing', () => {
+    const { roomId, username } = socket;
+
+    socket.to(roomId).emit('typing', { username });
+  });
+
+  socket.on('stop typing', () => {
+    const { roomId, username } = socket;
+
+    socket.to(roomId).emit('stop typing', { username });
+  });
+
   socket.on('leave room', (roomId) => {
     socket.leave(roomId, () => {
       io.to(roomId).emit('new message', {
@@ -106,7 +118,6 @@ io.on('connection', (socket) => {
         });
       }
     }
-    console.log(socket.rooms);
     console.log(`${socket.username} is disconnected, reason -> ${reason}`);
   });
 });

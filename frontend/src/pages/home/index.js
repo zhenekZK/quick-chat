@@ -6,6 +6,8 @@ import { EVENTS } from 'constants/socket-events';
 import { useSocket } from 'context/socket-context';
 import useUserData from 'hooks/use-user-data';
 
+var timeout = undefined;
+
 const HomePage = () => {
   const { setUserData } = useUserData();
   const [step, setStep] = useState(0);
@@ -16,13 +18,25 @@ const HomePage = () => {
   const { pathname } = useLocation();
   const [inputValue, setInputValue] = useState('');
   const [messages, setMessages] = useState([]);
+  const [isTyping, setIsTyping] = useState(false);
+  const [typingUsers, setTypingUsers] = useState([]);
+
+  console.log(typingUsers);
 
   useEffect(() => {
     socket.on(EVENTS.JOIN_ROOM, (roomId) => {
       history.push(roomId);
       setStep(step + 1);
     });
-  }, [socket, history, step]);
+    socket.on(EVENTS.START_TYPING, ({ username }) => {
+      if (!typingUsers.includes(username)) {
+        setTypingUsers([...typingUsers, username]);
+      }
+    });
+    socket.on(EVENTS.STOP_TYPING, ({ username }) => {
+      setTypingUsers([...typingUsers.filter((user) => user !== username)]);
+    });
+  }, [socket, history, step, typingUsers]);
 
   const roomId = useMemo(() => (pathname ? pathname.slice(1) : null), [
     pathname,
@@ -76,6 +90,22 @@ const HomePage = () => {
 
   const handleInputChange = (event) => {
     setInputValue(event.target.value);
+  };
+
+  function stopTyping() {
+    setIsTyping(false);
+    socket.emit('stop typing');
+  }
+
+  const handleInpurKeyDown = (event) => {
+    if (isTyping === false) {
+      setIsTyping(true);
+      socket.emit('typing');
+      timeout = setTimeout(stopTyping, 4000);
+    } else {
+      clearTimeout(timeout);
+      timeout = setTimeout(stopTyping, 4000);
+    }
   };
 
   const handleMessageSending = (event) => {
@@ -144,10 +174,20 @@ const HomePage = () => {
                     </Typography>
                   ))}
                 </Box>
+                {typingUsers.length ? (
+                  <Typography>
+                    {typingUsers.length === 1
+                      ? `${typingUsers[0]} is typing...`
+                      : `${typingUsers.map(
+                          (user, index) => `${user}, `,
+                        )} are typing...`}
+                  </Typography>
+                ) : null}
                 <form onSubmit={handleMessageSending}>
                   <TextField
                     value={inputValue}
                     onChange={handleInputChange}
+                    onKeyDown={handleInpurKeyDown}
                     fullWidth
                   />
                   <Button type="submit">Send</Button>
