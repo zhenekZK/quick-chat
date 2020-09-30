@@ -1,6 +1,6 @@
-//
-// Handle room message
-//
+/*
+ * Handle room message broadcasting
+ */
 
 module.exports = (socket) => {
   socket.on('new message', ({ text, room }) => {

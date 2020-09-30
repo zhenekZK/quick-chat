@@ -1,6 +1,6 @@
-//
-// Handle user joining into the room
-//
+/*
+ * Handle user joining into the room
+ */
 
 const uuid = require('uuid');
 

@@ -1,6 +1,6 @@
-//
-// Handle user typing
-//
+/*
+ * Handle user typing
+ */
 
 module.exports = (socket) => {
   socket.on('typing', () => {

@@ -1,6 +1,6 @@
-//
-// Handle disconnect
-//
+/*
+ * Handle user disconnection
+ */
 
 module.exports = (socket, io) => {
   socket.on('disconnect', (reason) => {

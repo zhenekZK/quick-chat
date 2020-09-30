@@ -2,7 +2,7 @@ import React from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import ReactDOM from 'react-dom';
 
-import './index.css';
+import 'static/fonts/font.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import AppProviders from 'context';

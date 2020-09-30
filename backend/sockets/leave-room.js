@@ -1,6 +1,6 @@
-//
-// Handle leaving room
-//
+/*
+ * Handle leaving the room
+ */
 
 module.exports = (socket, io) => {
   socket.on('leave room', (roomId) => {
