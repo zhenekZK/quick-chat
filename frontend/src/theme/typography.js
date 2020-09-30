@@ -1,12 +1,12 @@
 export default {
-  fontFamily: 'Montserrat, Roboto,, "Lucida Grande", sans-serif',
+  fontFamily: 'Montserrat, Roboto, Helvetica, Arial, sans-serif',
   h1: {
-    fontSize: '3rem',
-    fontWeight: 'bold',
+    fontSize: '4rem',
+    fontWeight: 800,
   },
   h2: {
-    fontSize: '2rem',
-    fontWeight: 500,
+    fontSize: '2.2rem',
+    fontWeight: 600,
     lineHeight: 1.75,
   },
   h3: {

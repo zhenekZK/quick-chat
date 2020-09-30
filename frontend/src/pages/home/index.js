@@ -6,6 +6,8 @@ import { EVENTS } from 'constants/socket-events';
 import { useSocket } from 'context/socket-context';
 import useUserData from 'hooks/use-user-data';
 
+import Greeting from 'pages/greeting';
+
 var timeout = undefined;
 
 const HomePage = () => {
@@ -128,6 +130,8 @@ const HomePage = () => {
       {(() => {
         switch (step) {
           case 0:
+            return <Greeting />;
+          case 1:
             return (
               <div style={{ margin: '0 auto', width: '400px' }}>
                 <form onSubmit={handleNameSubmit}>
@@ -143,7 +147,7 @@ const HomePage = () => {
                 </form>
               </div>
             );
-          case 1:
+          case 2:
             return (
               <div style={{ margin: '0 auto', width: '400px' }}>
                 <form onSubmit={handlePasswordSubmit}>
@@ -159,7 +163,7 @@ const HomePage = () => {
                 </form>
               </div>
             );
-          case 2:
+          case 3:
             return (
               <Box width="500px" height="100%" m="0 auto" pt="100px">
                 <Box>
