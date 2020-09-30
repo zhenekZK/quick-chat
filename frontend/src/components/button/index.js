@@ -1,9 +1,8 @@
-import React from 'react';
 import styled from 'styled-components';
 import { ButtonBase } from '@material-ui/core';
 
 const Button = styled(ButtonBase)`
-  padding: 25px 30px;
+  padding: 20px 30px;
   text-transform: none;
   font-size: 35px;
   font-weight: 800;

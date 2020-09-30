@@ -7,6 +7,7 @@ import { useSocket } from 'context/socket-context';
 import useUserData from 'hooks/use-user-data';
 
 import Greeting from 'pages/greeting';
+import FormData from 'pages/form-data';
 
 var timeout = undefined;
 
@@ -130,7 +131,7 @@ const HomePage = () => {
       {(() => {
         switch (step) {
           case 0:
-            return <Greeting />;
+            return <FormData />;
           case 1:
             return (
               <div style={{ margin: '0 auto', width: '400px' }}>
