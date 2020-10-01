@@ -5,7 +5,9 @@ import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
 
 import useAppError from 'hooks/use-app-error';
 import { ROUTES } from 'constants/routes';
-import HomePage from 'pages/home';
+import Home from 'pages/home';
+import Entry from 'pages/entry';
+import Room from 'pages/room';
 import { useSocket } from 'context/socket-context';
 import { ErrorPanel } from 'components/error-panel';
 
@@ -31,14 +33,23 @@ function App() {
     <Container position="relative" width="100%" height="100%" minHeight="100vh">
       <ErrorPanel />
       <Switch>
-        <Route path={ROUTES.NEW_ROOM}>
-          <HomePage />
+        <Route exact path={ROUTES.HOMEPAGE}>
+          <Home />
         </Route>
-        <Route path={ROUTES.EXISTING_ROOM}>
-          <HomePage />
+        <Route exact path={ROUTES.CREATE}>
+          <Entry />
         </Route>
+        <Route exact path={ROUTES.JOIN}>
+          <Entry />
+        </Route>
+        <Route path={ROUTES.ROOM_DETAIL}>
+          <Room />
+        </Route>
+        {/* <Route path={ROUTES.EXISTING_ROOM}>
+          <Home />
+        </Route> */}
         <Route path="*">
-          <Redirect to={ROUTES.NEW_ROOM} />
+          <Redirect to={ROUTES.HOMEPAGE} />
         </Route>
       </Switch>
     </Container>

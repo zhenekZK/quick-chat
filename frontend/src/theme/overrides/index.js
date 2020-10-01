@@ -1,9 +1,11 @@
+import MuiButtonBase from './MuiButtonBase';
 import MuiInputBase from './MuiInputBase';
-import MuiTextField from './MuiTextField';
 import MuiOutlinedInput from './MuiOutlinedInput';
+import MuiTextField from './MuiTextField';
 
 export default {
+  MuiButtonBase,
   MuiInputBase,
-  MuiTextField,
   MuiOutlinedInput,
+  MuiTextField,
 };

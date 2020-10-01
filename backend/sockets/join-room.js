@@ -5,13 +5,13 @@
 const uuid = require('uuid');
 
 module.exports = (socket, io) => {
-  socket.on('join room', ({ name, password, roomId = null }) => {
+  socket.on('join room', ({ name, keyword, roomId = null }) => {
     socket.username = name;
 
     if (roomId) {
       // check if roomId exists
       if (rooms[roomId]) {
-        if (rooms[roomId].password === password) {
+        if (rooms[roomId].keyword === keyword) {
           socket.join(roomId, () => {
             socket.roomId = roomId;
             socket.emit('join room', roomId);
@@ -22,7 +22,7 @@ module.exports = (socket, io) => {
           });
         } else {
           socket.emit('chat error', {
-            text: 'The password for this room is incorrect',
+            text: 'The keyword for this room is incorrect',
           });
         }
       } else {
@@ -32,11 +32,12 @@ module.exports = (socket, io) => {
       }
     } else {
       const id = uuid.v4();
+      console.log(id);
 
       rooms[id] = {
         id,
         users: [socket.username],
-        password,
+        keyword,
       };
 
       socket.join(id, () => {
