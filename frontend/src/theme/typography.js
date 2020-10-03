@@ -15,17 +15,12 @@ export default {
     lineHeight: 1.5,
   },
   h4: {
-    fontSize: '1.15rem',
-    fontWeight: 500,
-    lineHeight: 1.5,
-  },
-  h5: {
-    fontSize: '1rem',
+    fontSize: '1.7rem',
     fontWeight: 500,
     lineHeight: 1.5,
   },
   body1: {
-    fontSize: '0.9rem',
+    fontSize: '1.4rem',
     fontWeight: 500,
     lineHeight: 1.5,
   },

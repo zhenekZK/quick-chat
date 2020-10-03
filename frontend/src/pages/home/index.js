@@ -11,7 +11,7 @@ const Home = () => {
   const history = useHistory();
 
   const handleClick = () => {
-    history.push(ROUTES.CREATE);
+    history.push(ROUTES.ENTRY);
   };
 
   return (

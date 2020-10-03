@@ -2,6 +2,7 @@ import React, { useReducer, useEffect } from 'react';
 import { Box, Typography } from '@material-ui/core';
 import { useHistory, useParams } from 'react-router-dom';
 
+import useUserData from 'hooks/use-user-data';
 import { useSocket } from 'context/socket-context';
 import { ROUTES } from 'constants/routes';
 import { EVENTS } from 'constants/socket-events';
@@ -13,6 +14,7 @@ import { Container } from './styled-components';
 const Entry = () => {
   const socket = useSocket();
   const history = useHistory();
+  const { setUserData } = useUserData();
   const [data, setData] = useReducer((s, a) => ({ ...s, ...a }), {
     name: '',
     keyword: '',
@@ -38,6 +40,7 @@ const Entry = () => {
     const { name, keyword } = data;
 
     if (name && keyword) {
+      setUserData({ username: name });
       socket.emit(EVENTS.JOIN_ROOM, { name, keyword, roomId });
     }
   };

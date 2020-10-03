@@ -36,7 +36,7 @@ function App() {
         <Route exact path={ROUTES.HOMEPAGE}>
           <Home />
         </Route>
-        <Route exact path={ROUTES.CREATE}>
+        <Route exact path={ROUTES.ENTRY}>
           <Entry />
         </Route>
         <Route exact path={ROUTES.JOIN}>

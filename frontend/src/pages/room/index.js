@@ -1,22 +1,52 @@
-import React, { useReducer, useEffect, useState } from 'react';
-import { Box, Typography, TextField } from '@material-ui/core';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
+import { Box, Typography, IconButton } from '@material-ui/core';
+import SendIcon from '@material-ui/icons/Send';
 import { useHistory, useParams } from 'react-router-dom';
 
 import { useSocket } from 'context/socket-context';
 import { EVENTS } from 'constants/socket-events';
-import { Button } from 'components/button';
-import { Field } from 'components/field';
+import { ROUTES } from 'constants/routes';
+import useUserData from 'hooks/use-user-data';
 
-import { Container, ChatContainer, InputContainer } from './styled-components';
+import Message from './message';
+import {
+  Container,
+  ChatContainer,
+  MessagesContainer,
+  Input,
+  InputContainer,
+  SendButtonContainer,
+} from './styled-components';
 
 var timeout = undefined;
 
 const Room = () => {
   const socket = useSocket();
+  const { username } = useUserData();
+  const history = useHistory();
   const { id: roomId } = useParams();
   const [inputValue, setInputValue] = useState('');
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState([
+    { text: 'Eugene joined the room' },
+    { author: 'Eugene', text: 'Hello' },
+    { author: 'Eugene', text: 'How are you?' },
+    { author: 'Eugene', text: 'See you soon' },
+    { author: 'Eugene', text: 'Hello' },
+    { author: 'Eugene', text: 'How are you?' },
+    { author: 'Eugene', text: 'See you soon' },
+    { author: 'Eugene', text: 'Hello' },
+    { author: 'Eugene', text: 'How are you?' },
+    { author: 'Eugene', text: 'See you soon' },
+  ]);
   const [isTyping, setIsTyping] = useState(false);
+  const [typingUsers, setTypingUsers] = useState();
+  const messagesContainerRef = useRef();
+
+  useEffect(() => {
+    if (!username) {
+      // history.push(`${ROUTES.ENTRY}/${roomId}`);
+    }
+  }, [username]);
 
   const handleMessageSending = (event) => {
     event.preventDefault();
@@ -33,6 +63,15 @@ const Room = () => {
     setInputValue('');
   };
 
+  const goToTheFirstMessage = useCallback(() => {
+    if (messagesContainerRef) {
+      messagesContainerRef.current.scrollBy({
+        top: messagesContainerRef.current.scrollHeight,
+        behavior: 'smooth',
+      });
+    }
+  }, [messagesContainerRef]);
+
   useEffect(() => {
     socket.on(EVENTS.NEW_MESSAGE, (message) => {
       setMessages([...messages, message]);
@@ -42,6 +81,10 @@ const Room = () => {
       socket.off(EVENTS.NEW_MESSAGE);
     };
   }, [socket, messages]);
+
+  useEffect(() => {
+    goToTheFirstMessage();
+  }, [messages, goToTheFirstMessage]);
 
   const handleInputChange = (event) => {
     setInputValue(event.target.value);
@@ -71,9 +114,23 @@ const Room = () => {
       alignItems="center"
     >
       <ChatContainer>
+        <MessagesContainer ref={messagesContainerRef}>
+          {messages.map(({ author, text }, index) => (
+            <Box key={index} mb={2}>
+              <Message author={author} text={text} />
+            </Box>
+          ))}
+        </MessagesContainer>
         <InputContainer>
+          {typingUsers.length ? (
+            <Typography>
+              {typingUsers.length === 1
+                ? `${typingUsers[0]} is typing...`
+                : `${typingUsers.map((user) => `${user}, `)} are typing...`}
+            </Typography>
+          ) : null}
           <form onSubmit={handleMessageSending}>
-            <Field
+            <Input
               value={inputValue}
               placeholder="Type a message"
               variant="outlined"
@@ -81,7 +138,11 @@ const Room = () => {
               onKeyDown={handleInputKeyDown}
               fullWidth
             />
-            {/* <Button type="submit">Send</Button> */}
+            <SendButtonContainer>
+              <IconButton type="submit" color="inherit">
+                <SendIcon color="inherit" />
+              </IconButton>
+            </SendButtonContainer>
           </form>
         </InputContainer>
       </ChatContainer>

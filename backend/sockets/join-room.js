@@ -31,21 +31,21 @@ module.exports = (socket, io) => {
         });
       }
     } else {
-      const id = uuid.v4();
-      console.log(id);
+      const roomId = uuid.v4();
+      console.log(roomId);
 
-      rooms[id] = {
-        id,
+      rooms[roomId] = {
+        id: roomId,
         users: [socket.username],
         keyword,
       };
 
-      socket.join(id, () => {
-        socket.emit('join room', id);
+      socket.join(roomId, () => {
+        socket.emit('join room', roomId);
         socket.isAdmin = true;
-        socket.roomId = id;
+        socket.roomId = roomId;
 
-        io.to(id).emit('new message', {
+        io.to(roomId).emit('new message', {
           text: `${socket.username} joined the room`,
         });
       });
