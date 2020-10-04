@@ -8,6 +8,7 @@ import { EVENTS } from 'constants/socket-events';
 import { ROUTES } from 'constants/routes';
 import useUserData from 'hooks/use-user-data';
 
+import SaveLinkButton from './save-link-button';
 import Message from './message';
 import {
   Container,
@@ -122,13 +123,13 @@ const Room = () => {
           ))}
         </MessagesContainer>
         <InputContainer>
-          {typingUsers.length ? (
+          {/* {typingUsers.length ? (
             <Typography>
               {typingUsers.length === 1
                 ? `${typingUsers[0]} is typing...`
                 : `${typingUsers.map((user) => `${user}, `)} are typing...`}
             </Typography>
-          ) : null}
+          ) : null} */}
           <form onSubmit={handleMessageSending}>
             <Input
               value={inputValue}
@@ -146,6 +147,9 @@ const Room = () => {
           </form>
         </InputContainer>
       </ChatContainer>
+      <Box position="absolute" right={40} bottom={40}>
+        <SaveLinkButton />
+      </Box>
     </Container>
   );
 };
