@@ -7,8 +7,6 @@ const InfoMessage = styled(Typography)`
   font-style: italic;
 `;
 
-// const UserMessage = styled()``;
-
 const UserMessageTextWrapper = styled(Box)`
   max-width: 35%;
   background-color: ${({ theme }) => theme.palette.common.white};
@@ -44,4 +42,6 @@ Message.propTypes = {
   text: PropTypes.string.isRequired,
 };
 
-export { Message as default };
+const MemoizedMessage = React.memo(Message);
+
+export { MemoizedMessage as default };

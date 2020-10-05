@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useState, useRef } from 'react';
-import { Box, Typography, IconButton } from '@material-ui/core';
+import { Box, IconButton } from '@material-ui/core';
 import SendIcon from '@material-ui/icons/Send';
 import { useHistory, useParams } from 'react-router-dom';
+import debounce from 'lodash/debounce';
 
 import { useSocket } from 'context/socket-context';
 import { EVENTS } from 'constants/socket-events';
@@ -9,6 +10,7 @@ import { ROUTES } from 'constants/routes';
 import useUserData from 'hooks/use-user-data';
 
 import SaveLinkButton from './save-link-button';
+import TypingInfo from './typing-info';
 import Message from './message';
 import {
   Container,
@@ -19,35 +21,25 @@ import {
   SendButtonContainer,
 } from './styled-components';
 
-var timeout = undefined;
-
 const Room = () => {
   const socket = useSocket();
   const { username } = useUserData();
   const history = useHistory();
   const { id: roomId } = useParams();
   const [inputValue, setInputValue] = useState('');
-  const [messages, setMessages] = useState([
-    { text: 'Eugene joined the room' },
-    { author: 'Eugene', text: 'Hello' },
-    { author: 'Eugene', text: 'How are you?' },
-    { author: 'Eugene', text: 'See you soon' },
-    { author: 'Eugene', text: 'Hello' },
-    { author: 'Eugene', text: 'How are you?' },
-    { author: 'Eugene', text: 'See you soon' },
-    { author: 'Eugene', text: 'Hello' },
-    { author: 'Eugene', text: 'How are you?' },
-    { author: 'Eugene', text: 'See you soon' },
-  ]);
-  const [isTyping, setIsTyping] = useState(false);
-  const [typingUsers, setTypingUsers] = useState();
+  const [messages, setMessages] = useState([]);
+  const [typingUsers, setTypingUsers] = useState([]);
   const messagesContainerRef = useRef();
 
   useEffect(() => {
     if (!username) {
-      // history.push(`${ROUTES.ENTRY}/${roomId}`);
+      if (roomId) {
+        history.push(`${ROUTES.ENTRY}/${roomId}`);
+      } else {
+        history.push(ROUTES.HOMEPAGE);
+      }
     }
-  }, [username]);
+  }, [username, history, roomId]);
 
   const handleMessageSending = (event) => {
     event.preventDefault();
@@ -64,7 +56,7 @@ const Room = () => {
     setInputValue('');
   };
 
-  const goToTheFirstMessage = useCallback(() => {
+  const scrollToTheFirstMessage = useCallback(() => {
     if (messagesContainerRef) {
       messagesContainerRef.current.scrollBy({
         top: messagesContainerRef.current.scrollHeight,
@@ -73,6 +65,7 @@ const Room = () => {
     }
   }, [messagesContainerRef]);
 
+  /* Handle incoming messages */
   useEffect(() => {
     socket.on(EVENTS.NEW_MESSAGE, (message) => {
       setMessages([...messages, message]);
@@ -83,28 +76,67 @@ const Room = () => {
     };
   }, [socket, messages]);
 
+  console.log(typingUsers);
+
+  const stopTyping = useCallback(
+    (username) => {
+      setTypingUsers([
+        ...typingUsers.filter((user) => user.username !== username),
+      ]);
+    },
+    [setTypingUsers, typingUsers],
+  );
+
+  /* Handle typing */
   useEffect(() => {
-    goToTheFirstMessage();
-  }, [messages, goToTheFirstMessage]);
+    socket.on(EVENTS.START_TYPING, ({ username }) => {
+      const userAmongTypingUsers = typingUsers.find(
+        (user) => user.username === username,
+      );
+
+      if (userAmongTypingUsers) {
+        let { username, typingTimeout } = userAmongTypingUsers;
+        clearTimeout(typingTimeout);
+        setTypingUsers([
+          ...typingUsers.filter((user) => user.username !== username),
+          {
+            username,
+            typingTimeout: setTimeout(() => stopTyping(username), 4000),
+          },
+        ]);
+      } else {
+        setTypingUsers([
+          ...typingUsers,
+          {
+            username,
+            typingTimeout: setTimeout(() => stopTyping(username), 4000),
+          },
+        ]);
+      }
+    });
+    return () => {
+      socket.off(EVENTS.START_TYPING);
+    };
+  }, [socket, typingUsers, stopTyping]);
+
+  const handleInputKeyDown = useCallback(
+    debounce(
+      () => {
+        console.log('MAKE TYPING');
+        socket.emit('typing');
+      },
+      2000,
+      { maxWait: 3000, leading: true },
+    ),
+    [socket],
+  );
+
+  useEffect(() => {
+    scrollToTheFirstMessage();
+  }, [messages, scrollToTheFirstMessage]);
 
   const handleInputChange = (event) => {
     setInputValue(event.target.value);
-  };
-
-  const stopTyping = () => {
-    setIsTyping(false);
-    socket.emit('stop typing');
-  };
-
-  const handleInputKeyDown = (event) => {
-    if (isTyping === false) {
-      setIsTyping(true);
-      socket.emit('typing');
-      timeout = setTimeout(stopTyping, 4000);
-    } else {
-      clearTimeout(timeout);
-      timeout = setTimeout(stopTyping, 4000);
-    }
   };
 
   return (
@@ -123,13 +155,7 @@ const Room = () => {
           ))}
         </MessagesContainer>
         <InputContainer>
-          {/* {typingUsers.length ? (
-            <Typography>
-              {typingUsers.length === 1
-                ? `${typingUsers[0]} is typing...`
-                : `${typingUsers.map((user) => `${user}, `)} are typing...`}
-            </Typography>
-          ) : null} */}
+          <TypingInfo typingUsers={typingUsers} />
           <form onSubmit={handleMessageSending}>
             <Input
               value={inputValue}

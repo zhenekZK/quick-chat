@@ -21,4 +21,6 @@ const SaveLinkButton = () => {
   );
 };
 
-export default SaveLinkButton;
+const MemoizedSaveLinkButton = React.memo(SaveLinkButton);
+
+export { MemoizedSaveLinkButton as default };
