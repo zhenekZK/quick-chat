@@ -4,7 +4,12 @@
   "description": "Server for quick-chat application",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js",
+    "server-dependencies": "npm install",
+    "client-dependencies": "npm install --prefix ../frontend",
+    "dev": "npm run start & npm run start --prefix ../frontend",
+    "prepare-env": "npm run server-dependencies && npm run client-dependencies && npm run dev"
   },
   "author": "",
   "license": "ISC",
