@@ -9,7 +9,8 @@ import Home from 'pages/home';
 import Entry from 'pages/entry';
 import Room from 'pages/room';
 import { useSocket } from 'context/socket-context';
-import { ErrorPanel } from 'components/error-panel';
+import ErrorPanel from 'components/error-panel';
+import HomeLink from 'components/home-link';
 
 const Container = styled(Box)`
   background: linear-gradient(90deg, #5c258d 0%, #4389a2 100%);
@@ -32,6 +33,7 @@ function App() {
   return (
     <Container position="relative" width="100%" height="100%" minHeight="100vh">
       <ErrorPanel />
+      <HomeLink />
       <Switch>
         <Route exact path={ROUTES.HOMEPAGE}>
           <Home />

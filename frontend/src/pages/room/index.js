@@ -76,8 +76,6 @@ const Room = () => {
     };
   }, [socket, messages]);
 
-  console.log(typingUsers);
-
   const stopTyping = useCallback(
     (username) => {
       setTypingUsers([
@@ -122,7 +120,6 @@ const Room = () => {
   const handleInputKeyDown = useCallback(
     debounce(
       () => {
-        console.log('MAKE TYPING');
         socket.emit('typing');
       },
       2000,

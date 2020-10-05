@@ -17,11 +17,15 @@ const ErrorPanel = () => {
     }
   }, [text, setErrorData]);
 
-  return text ? (
+  if (!text) {
+    return null;
+  }
+
+  return (
     <Container>
       <Text>{text}</Text>
     </Container>
-  ) : null;
+  );
 };
 
-export { ErrorPanel };
+export { ErrorPanel as default };

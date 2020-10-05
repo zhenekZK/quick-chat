@@ -4,12 +4,14 @@
 
 module.exports = (socket, io) => {
   socket.on('disconnect', (reason) => {
-    const roomId = socket.roomId;
+    const { username, roomId, isAdmin } = socket;
+
+    console.log(`${username} is disconnected, reason -> ${reason}`);
 
     if (roomId) {
       // if socket is admin -> disconnect all users
       // if socket is a guest -> just notify about leaving
-      if (socket.isAdmin) {
+      if (isAdmin) {
         io.of('/')
           .in(roomId)
           .clients((error, clients) => {
@@ -20,10 +22,9 @@ module.exports = (socket, io) => {
           });
       } else {
         io.to(roomId).emit('new message', {
-          text: `${socket.username} left the room`,
+          text: `${username} left the room`,
         });
       }
     }
-    console.log(`${socket.username} is disconnected, reason -> ${reason}`);
   });
 };

@@ -4,7 +4,7 @@ const cors = require('cors');
 
 const app = express();
 const server = require('http').createServer(app);
-const options = {};
+const options = { upgradeTimeout: 30000 };
 const port = process.env.PORT || 4000;
 
 const io = require('socket.io')(server, options);
