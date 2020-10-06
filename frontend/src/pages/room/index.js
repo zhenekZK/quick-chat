@@ -43,7 +43,7 @@ const Room = () => {
 
   useEffect(() => {
     let unlisten = history.listen(() => {
-      socket.emit('leave room');
+      socket.emit(EVENTS.LEAVE_ROOM);
     });
     return () => {
       unlisten();
@@ -129,7 +129,7 @@ const Room = () => {
   const handleInputKeyDown = useCallback(
     debounce(
       () => {
-        socket.emit('typing');
+        socket.emit(EVENTS.START_TYPING);
       },
       2000,
       { maxWait: 3000, leading: true },

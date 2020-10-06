@@ -50,9 +50,6 @@ function App() {
         <Route path={ROUTES.ROOM_DETAIL}>
           <Room />
         </Route>
-        {/* <Route path={ROUTES.EXISTING_ROOM}>
-          <Home />
-        </Route> */}
         <Route path="*">
           <Redirect to={ROUTES.HOMEPAGE} />
         </Route>
