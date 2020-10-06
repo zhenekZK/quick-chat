@@ -2,12 +2,16 @@
  * Handle leaving the room
  */
 
+const handleLeavingRoom = require('../helpers/handle-leaving-room');
+
 module.exports = (socket, io) => {
-  socket.on('leave room', (roomId) => {
+  socket.on('leave room', () => {
+    const { roomId } = socket;
+
     socket.leave(roomId, () => {
-      io.to(roomId).emit('new message', {
-        text: `${socket.username} left the room`,
-      });
+      handleLeavingRoom(socket, io);
+      socket.isAdmin = false;
+      socket.roomId = null;
     });
   });
 };

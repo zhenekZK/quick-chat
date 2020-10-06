@@ -36,7 +36,6 @@ module.exports = (socket, io) => {
 
       rooms[roomId] = {
         id: roomId,
-        users: [socket.username],
         keyword,
       };
 

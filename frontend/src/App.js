@@ -25,6 +25,9 @@ function App() {
     socket.on('connect', () => {
       console.log(socket.connected);
     });
+    socket.on('disconnect', () => {
+      history.push(ROUTES.HOMEPAGE);
+    });
     socket.on('chat error', ({ text }) => {
       setErrorData({ text });
     });

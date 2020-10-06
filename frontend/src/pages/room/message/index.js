@@ -1,22 +1,12 @@
 import React from 'react';
-import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { Typography, Grid, Box, Avatar } from '@material-ui/core';
+import { Grid, Box, Avatar } from '@material-ui/core';
 
-const InfoMessage = styled(Typography)`
-  font-style: italic;
-`;
-
-const UserMessageTextWrapper = styled(Box)`
-  max-width: 35%;
-  background-color: ${({ theme }) => theme.palette.common.white};
-  border-radius: 15px;
-  padding: ${({ theme }) => `${theme.spacing(1)}px`};
-`;
-
-const UserMessageText = styled(Typography)`
-  font-weight: 700;
-`;
+import {
+  InfoMessage,
+  UserMessageTextWrapper,
+  UserMessageText,
+} from './styled-components';
 
 const Message = ({ author, text }) => {
   return author ? (

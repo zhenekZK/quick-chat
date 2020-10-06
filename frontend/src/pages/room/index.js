@@ -41,6 +41,15 @@ const Room = () => {
     }
   }, [username, history, roomId]);
 
+  useEffect(() => {
+    let unlisten = history.listen(() => {
+      socket.emit('leave room');
+    });
+    return () => {
+      unlisten();
+    };
+  }, [history, socket]);
+
   const handleMessageSending = (event) => {
     event.preventDefault();
 
